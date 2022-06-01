@@ -14,7 +14,7 @@ type_names =['Bug', 'Dark', 'Dragon', 'Electric', 'Fairy', 'Fighting', 'Fire', '
 
 model_dict = {}
 for name in type_names:
-    model_dict[name] = tf.keras.models.load_model(f'models/{name}_model')
+    model_dict[name] = tf.keras.models.load_model(f'Models/{name}_model')
 
 pokemon_dict= pd.read_csv('data/pokemon_class_dict.csv', header=None, index_col=0, squeeze=True).to_dict()
 
