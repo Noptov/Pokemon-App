@@ -8,7 +8,7 @@ from tensorflow.keras.preprocessing import image
 
 size = (128, 128)
 
-type_model = tf.keras.models.load_model('Models/type-select-model')
+type_model = tf.keras.models.load_model('Models/type_select_model')
 type_names =['Bug', 'Dark', 'Dragon', 'Electric', 'Fairy', 'Fighting', 'Fire', 'Ghost', 'Grass', 
             'Ground', 'Ice', 'Normal', 'Poison', 'Psychic', 'Rock', 'Steel', 'Water']
 
