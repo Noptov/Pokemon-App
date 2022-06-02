@@ -38,12 +38,14 @@ if user_pic_file is not None:
     # Use converted image to predict type of pokemon
     user_pred = type_model.predict(user_batch)
     user_type = type_names[np.argmax(user_pred)]
-    st.write(f'The type of Pokemon is {user_type}')
+    st.write(f"The Pokemon's type is {user_type}!")
 
     # Based on type, use appropriate model to ID individual pokemon
     ind_model = model_dict[user_type]
     ind_pred = ind_model.predict(user_batch)
     ind_list = pokemon_dict[user_type].split(',')
     ind_pokemon = ind_list[np.argmax(ind_pred)]
+    ind_num = ind_pokemon.split('-')[0]
+    ind_name = ind_pokemon.split('-')[1]
 
-    st.write(f'Your Pokemon is {ind_pokemon}!')
+    st.write(f'Your Pokemon is number{ind_num}, {ind_name}!')
