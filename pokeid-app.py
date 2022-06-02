@@ -16,13 +16,21 @@ def load_ind():
     model_dict = {}
     for name in type_names:
         model_dict[name] = tf.keras.models.load_model(f'Models/{name}_model')
-    return model_dict   
+    return model_dict
+
+@st.cache
+def load_stats():
+    poke_stats = pd.read_csv('Data/pokestats_gen7_rev2.csv', header=[0], index_col=0)
+    poke_stats.columns.name = 'Pokedex Number'
+    poke_stats.fillna('', inplace=True)
+    return poke_stats
 
 type_model = load_type()
 type_names =['Bug', 'Dark', 'Dragon', 'Electric', 'Fairy', 'Fighting', 'Fire', 'Ghost', 'Grass', 
             'Ground', 'Ice', 'Normal', 'Poison', 'Psychic', 'Rock', 'Steel', 'Water']
 
 ind_dict = load_ind()
+poke_stats_df = load_stats()
 
 pokemon_dict= pd.read_csv('Data/pokemon_class_dict.csv', header=None, index_col=0, squeeze=True).to_dict()
 
@@ -37,8 +45,6 @@ if user_pic_file is not None:
     user_img = image.load_img(user_pic_file, target_size=(128, 128))
     st.image(user_img)
     user_array = image.img_to_array(user_img)
-   
-
     user_batch = np.expand_dims(user_array, axis=0)
 
     # Use converted image to predict type of pokemon
@@ -56,3 +62,9 @@ if user_pic_file is not None:
     ind_name = ind_pokemon.split('-')[1]
 
     st.write(f"Your Pokemon is number{ind_num}, {ind_name}!")
+
+    # Display Stats
+    st.write("It's stats are:")
+    display_df = poke_stats_df.loc[poke_stats_df.index == int(ind_num)]
+    display_df = display_df.iloc[0, 3:]
+    st.write(display_df.astype(str))
