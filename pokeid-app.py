@@ -6,17 +6,23 @@ from tensorflow import keras
 from tensorflow.keras.applications.resnet50 import preprocess_input, decode_predictions
 from tensorflow.keras.preprocessing import image
 from tensorflow.keras.layers import Resizing
-# from PIL import Image
 
-size = (128, 128)
+@st.cache(allow_output_mutation=True)
+def load_type():
+    return tf.keras.models.load_model('Models/type_select_model')
 
-type_model = tf.keras.models.load_model('Models/type_select_model')
+@st.cache(allow_output_mutation=True)
+def load_ind():   
+    model_dict = {}
+    for name in type_names:
+        model_dict[name] = tf.keras.models.load_model(f'Models/{name}_model')
+    return model_dict   
+
+type_model = load_type()
 type_names =['Bug', 'Dark', 'Dragon', 'Electric', 'Fairy', 'Fighting', 'Fire', 'Ghost', 'Grass', 
             'Ground', 'Ice', 'Normal', 'Poison', 'Psychic', 'Rock', 'Steel', 'Water']
 
-model_dict = {}
-for name in type_names:
-    model_dict[name] = tf.keras.models.load_model(f'Models/{name}_model')
+ind_dict = load_ind()
 
 pokemon_dict= pd.read_csv('Data/pokemon_class_dict.csv', header=None, index_col=0, squeeze=True).to_dict()
 
@@ -41,7 +47,7 @@ if user_pic_file is not None:
     st.write(f"Your Pokemon's type is {user_type}!")
 
     # Based on type, use appropriate model to ID individual pokemon
-    ind_model = model_dict[user_type]
+    ind_model = ind_dict[user_type]
     ind_pred = ind_model.predict(user_batch)
     ind_list = pokemon_dict[user_type].split(',')
     ind_pokemon = ind_list[np.argmax(ind_pred)]
